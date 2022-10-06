@@ -71,7 +71,7 @@ const App = () => {
         backgroundColor={backgroundStyle.backgroundColor}
       />
       <Text>
-        Hola BEBAagkfsjkgavnsa
+        Hola Munda grace
       </Text>
     </SafeAreaView>
   );
