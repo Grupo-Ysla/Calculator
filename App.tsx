@@ -8,15 +8,15 @@
  * @format
  */
 
-import React, {type PropsWithChildren} from 'react';
+import React, {useState, type PropsWithChildren} from 'react';
 import {
-  SafeAreaView,
-  ScrollView,
+  
   StatusBar,
   StyleSheet,
+  Switch,
   Text,
   useColorScheme,
-  View,
+  View as SafeAreaView,
 } from 'react-native';
 
 import {
@@ -26,73 +26,46 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+import Button from './src/components/Button';
+import MyKeyboard from './src/components/MyKeyboard';
+import { ThemeContext } from './src/context/ThemeContext';
+import { myColors } from './src/styles/colors';
 
-const Section: React.FC<
-  PropsWithChildren<{
-    title: string;
-  }>
-> = ({children, title}) => {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-};
+
 
 const App = () => {
-  const isDarkMode = useColorScheme() === 'dark';
 
+  const isDarkMode = useColorScheme() === 'dark';
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
+  const [theme, setTheme] = useState('light')
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <Text>
-        Hola Munda grace
-      </Text>
-    </SafeAreaView>
+    <ThemeContext.Provider value={theme}>
+
+      <SafeAreaView style={theme === 'light' ? styles.container : [styles.container, {backgroundColor: '#000000'}]}>
+
+        <StatusBar
+       barStyle={theme === 'light' ? 'dark-content' : 'light-content'}
+        backgroundColor={theme === 'light' ? Colors.lighter : Colors.darker}
+        />
+        <Switch 
+          value={theme === 'light'}
+          onValueChange={ () => setTheme( theme === 'light' ? 'dark' : 'light' )}
+        />
+        <MyKeyboard />
+      </SafeAreaView>
+    </ThemeContext.Provider>
   );
 };
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
+  container: {
+    flex: 1,
+    backgroundColor: myColors.light,
+    alignItems: 'center', //eje X-X
+    justifyContent: 'flex-start', //eje Y-Y
   },
 });
 
