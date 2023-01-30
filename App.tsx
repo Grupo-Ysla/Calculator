@@ -1,79 +1,69 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * Generated with the TypeScript template
- * https://github.com/react-native-community/react-native-template-typescript
- *
- * @format
- */
-
+import {useState} from 'react';
 import React, {type PropsWithChildren} from 'react';
+import {ThemeContext} from './src/context/ThemeContext';
+
 import {
   SafeAreaView,
-  ScrollView,
   StatusBar,
   StyleSheet,
-  Text,
   useColorScheme,
-  View,
+  Switch,
 } from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
+import {myColors} from './src/styles/Colors';
+import MyKeyboard from './src/components/MyKeyboard';
 
-const Section: React.FC<
-  PropsWithChildren<{
-    title: string;
-  }>
-> = ({children, title}) => {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
+const initialContextValues = {
+  mode: 'light',
+  calculationHistory: [
+    {
+      firtNumber: '',
+      secondNumber: '',
+      operationes: '',
+      result: 'null',
+    },
+  ],
 };
 
 const App = () => {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+  // const backgroundStyle = {
+  //   backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  // const isDarkMode = useColorScheme() === 'dark';
+  const [theme, setTheme] = useState(initialContextValues);
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <Text>
-        Hola Munda grace
-      </Text>
-    </SafeAreaView>
+    <ThemeContext.Provider value={theme}>
+      <SafeAreaView
+        style={
+          theme.mode === initialContextValues.mode
+            ? styles.container
+            : [styles.container, {backgroundColor: 'black'}]
+        }>
+        <StatusBar
+          barStyle={
+            theme.mode === initialContextValues.mode
+              ? 'light-content'
+              : 'dark-content'
+          }
+          backgroundColor={
+            theme.mode === initialContextValues.mode
+              ? Colors.lighter
+              : Colors.darker
+          }
+        />
+        <Switch
+          value={theme.mode === initialContextValues.mode}
+          onValueChange={() =>
+            setTheme({
+              ...initialContextValues,
+              mode: theme.mode === initialContextValues.mode ? 'dark' : 'light',
+            })
+          }
+        />
+        <MyKeyboard />
+      </SafeAreaView>
+    </ThemeContext.Provider>
   );
 };
 
@@ -81,6 +71,15 @@ const styles = StyleSheet.create({
   sectionContainer: {
     marginTop: 32,
     paddingHorizontal: 24,
+  },
+  container: {
+    flex: 1,
+    backgroundColor: myColors.light,
+    alignItems: 'center', //horizontal(x)
+    justifyContent: 'flex-start',
+    // flexDirection: 'row',
+    // borderWidth: 1,
+    height: 100,
   },
   sectionTitle: {
     fontSize: 24,
